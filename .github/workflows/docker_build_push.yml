@@ -55,7 +55,7 @@ jobs:
 
       # 7. Scan Docker Image for Vulnerabilities
       - name: Run Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: "${{ vars.DOCKERHUB_USER }}:sha-${{ steps.sha.outputs.short_sha }}"
           format: table
