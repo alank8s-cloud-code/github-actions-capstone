@@ -1,3 +1,5 @@
+# Added to the testing branch
+
 # Flask App — AWS ECS Deployment
 
 A minimal Flask web application built for learning containerization and deployment to **AWS ECS (Elastic Container Service)**.
@@ -46,7 +48,7 @@ pip install -r requirements.txt
 python run.py
 ```
 
-App runs at **http://localhost:80**.
+App runs at **<http://localhost:80>**.
 
 ### Run with Docker
 
@@ -73,10 +75,12 @@ Single-stage build using `python:3.14-slim`. Straightforward — copies everythi
 ### Multistage (`Dockerfile-multi`)
 
 Two-stage build:
+
 1. **Builder stage** — installs dependencies into a separate directory using `python:3.14-slim`
 2. **Final stage** — copies only the app and deps into a `distroless` image
 
 Benefits:
+
 - Smaller final image (no pip, no shell, no OS utilities)
 - Reduced attack surface — distroless images contain only the app and its runtime
 - Better layer caching — dependencies are copied before source code
@@ -93,6 +97,7 @@ Benefits:
 High-level steps to deploy this app on ECS:
 
 1. **Push image to ECR**
+
    ```bash
    aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
    docker tag flask-app:latest <account-id>.dkr.ecr.<region>.amazonaws.com/flask-app:latest
