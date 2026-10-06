@@ -1,0 +1,15 @@
+name: Main Pipeline
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   docker:
+#     needs: build_test
+#     uses: ./.github/workflows/reusable-docker.yml
+#     with:
+#       image_name: alank8scloud/flask-app
+#       docker_username: ${{ vars.DOCKER_USERNAME }}
+#     secrets: inherit

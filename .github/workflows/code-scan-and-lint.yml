@@ -2,7 +2,13 @@
 name: Code scan and Lint
 
 # This workflow can be called by another workflow
-on: workflow_call
+on:
+  push:
+    branches:
+      - main
+  # pull_request:
+  #   branches:
+  #     - main
 
 # Jobs
 jobs:
@@ -20,18 +26,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      # 3. Upgrade pip
+      # 3. Upgrade pip and Install dependencies
       - name: Upgrade pip
         run: |
           python -m pip install --upgrade pip
           python -m pip install flake8
+          python -m pip install -r requirements.txt
+          echo "Dependencies installed successfully"
 
       # 4. Code linting
       - name: Code linting
-        run: flake8 app.py
-
-      # 4. Install dependencies
-      - name: Install Dependencies
         run: |
-          python -m pip install -r requirements.txt
-          echo "Dependencies installed successfully"
+          flake8 app.py
+          flake8 tests/test_app.py
+
+      # 5. Run tests
+      - name: Run tests
+        run: python -m pytest -v
