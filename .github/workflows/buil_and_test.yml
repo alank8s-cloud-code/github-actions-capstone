@@ -1,39 +1,16 @@
 # Name shown in GitHub Actions
-name: Reusable Build & Test
+name: Code scan and Lint
 
 # This workflow can be called by another workflow
 on:
-  workflow_call:
-    # Inputs received from the calling workflow
-    inputs:
-      # Python version to install
-      python_version:
-        description: "Python version to use"
-        required: false
-        type: string
-        default: "3.14"
-
-      # Whether tests should be executed
-      run_tests:
-        description: "Whether to run tests"
-        required: false
-        type: boolean
-        default: true
-
-    # Outputs returned to the calling workflow
-    outputs:
-      test_result:
-        description: "Result of the tests"
-        value: ${{ jobs.build_test.outputs.test_result }}
+  push:
+    branches:
+      - main
 
 # Jobs
 jobs:
   build_test:
     runs-on: ubuntu-latest
-
-    # Output from this job
-    outputs:
-      test_result: ${{ steps.test_result.outputs.test_result }}
 
     steps:
       # 1. Checkout repository
@@ -44,41 +21,20 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ inputs.python_version }}
+          python-version: "3.12"
 
       # 3. Upgrade pip
       - name: Upgrade pip
         run: |
           python -m pip install --upgrade pip
+          python -m pip install flake8
+
+      # 4. Code linting
+      - name: Code linting
+        run: flask8 app.py
 
       # 4. Install dependencies
       - name: Install Dependencies
         run: |
-          python -m pip install -r flask-app-ecs/requirements.txt
+          python -m pip install -r requirements.txt
           echo "Dependencies installed successfully"
-
-      # 5. Run tests
-      - name: Run Tests
-        id: run_tests
-        if: ${{ inputs.run_tests }}
-        run: |
-          cd flask-app-ecs
-          python -m pytest tests/test_app.py
-
-      # 6. Set test result
-      - name: Set Test Result
-        id: test_result
-        if: always()
-        run: |
-          if [ "${{ inputs.run_tests }}" = "false" ]; then
-            echo "Tests were skipped"
-            echo "test_result=passed" >> "$GITHUB_OUTPUT"
-
-          elif [ "${{ steps.run_tests.outcome }}" = "success" ]; then
-            echo "Tests passed"
-            echo "test_result=passed" >> "$GITHUB_OUTPUT"
-
-          else
-            echo "Tests failed"
-            echo "test_result=failed" >> "$GITHUB_OUTPUT"
-          fi
