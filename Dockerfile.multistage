@@ -18,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt --target /app/lib
 
 COPY . .
 
-# Stage 2: Deployer
+# Stage 2: Deployer set
 
 FROM gcr.io/distroless/python3-debian13
 
