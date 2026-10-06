@@ -2,13 +2,10 @@ name: Dependency Review
 
 # The dependency review action MUST run on pull requests to compare changes
 on:
-  push:
+  pull_request:
     branches:
       - main
-  # pull_request:
-  #   branches:
-  #     - main
-  #   types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read # Required to read the repository's dependency graph
