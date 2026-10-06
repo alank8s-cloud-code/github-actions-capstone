@@ -1,4 +1,4 @@
-# Stage 1: builder to set
+# Stage 1: builder to set this
 
 FROM python:3.14-slim AS builder
 
