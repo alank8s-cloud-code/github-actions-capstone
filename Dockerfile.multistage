@@ -1,0 +1,47 @@
+# Stage 1: builder
+
+FROM python:3.14-slim AS builder
+
+#Set the working directory inside the container
+
+WORKDIR /app
+
+# Copy the dependencies
+
+COPY requirements.txt .
+
+# Install the dependencies
+
+RUN pip install --no-cache-dir -r requirements.txt --target /app/lib
+
+# Copy the rest of the code
+
+COPY . .
+
+# Stage 2: Deployer
+
+FROM gcr.io/distroless/python3-debian13
+
+#Set the working directory inside the container
+
+WORKDIR /app
+
+# Copy the dependencies from builder stage
+
+COPY --from=builder /app/lib /app/lib
+
+COPY --from=builder /app .
+
+# Set the environments variable
+
+ENV PYTHONBUFFERED=1
+
+ENV PYTHONPATH="/app/lib"
+
+# Expose the port
+
+EXPOSE 80
+
+# Run the application
+
+CMD ["-m", "gunicorn", "--bind", "0.0.0.0:80", "app:app"]
