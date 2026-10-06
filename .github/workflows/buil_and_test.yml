@@ -31,7 +31,7 @@ jobs:
 
       # 4. Code linting
       - name: Code linting
-        run: flask8 app.py
+        run: flake8 app.py
 
       # 4. Install dependencies
       - name: Install Dependencies
